@@ -10,7 +10,7 @@ const ON_INIT_METADATA_KEY = "onInit";
 const ON_START_METADATA_KEY = "onStart";
 
 // Controller decorator with optional loadOrder
-function Controller(options: { loadOrder?: number } = {}) {
+export function Controller(options: { loadOrder?: number } = {}) {
   return function (target: any) {
     if (controllerRegistry.has(target)) {
       throw new Error("Controller already registered");
@@ -21,7 +21,7 @@ function Controller(options: { loadOrder?: number } = {}) {
 }
 
 // OnInit lifecycle hook decorator
-function OnInit() {
+export function OnInit() {
   return function (
     target: any,
     propertyKey: string,
@@ -32,7 +32,7 @@ function OnInit() {
 }
 
 // OnStart lifecycle hook decorator
-function OnStart() {
+export function OnStart() {
   return function (
     target: any,
     propertyKey: string,
@@ -43,7 +43,7 @@ function OnStart() {
 }
 
 // Module decorator for feature-based controller organization
-function Module(controllers: any[]) {
+export function Module(controllers: any[]) {
   return function (target: any) {
     if (moduleRegistry.has(target)) {
       throw new Error("Module already registered");
@@ -113,7 +113,7 @@ async function registerController(ControllerClass: any): Promise<any> {
 }
 
 // Utility to get controller instances after startup
-function Dependency(controllerClass: any) {
+export function Dependency(controllerClass: any) {
   if (!controllerInstances.has(controllerClass)) {
     throw new Error("Controller not registered or not loaded yet");
   }
@@ -121,7 +121,7 @@ function Dependency(controllerClass: any) {
 }
 
 // The AppLife namespace for lifecycle control
-namespace AppLife {
+export namespace AppLife {
   // Load modules to ensure all controllers are imported
   export function LoadModules(modules: any[]) {
     for (const module of modules) {
@@ -173,5 +173,3 @@ namespace AppLife {
     await Promise.all(startPromises);
   }
 }
-
-export { Controller, OnInit, OnStart, Module, Dependency, AppLife };
