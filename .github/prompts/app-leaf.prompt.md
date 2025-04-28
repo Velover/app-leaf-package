@@ -16,7 +16,7 @@ private Start() {}
 //main file
 
 //starts everything and prevents the app stopping
-AppLife.Start();
+AppLeaf.Start();
 
 ````
 
@@ -48,9 +48,9 @@ private Start() {}
 //main file
 
 //to ensure everything is imported
-AppLife.LoadModules([Feature1Module, Feature2Module]);
+AppLeaf.LoadModules([Feature1Module, Feature2Module]);
 //starts the lifecycle
-AppLife.Start();
+AppLeaf.Start();
 ````
 
 **IMPORTANT NOTES**
@@ -76,7 +76,7 @@ Use reflect to detect the dependency injection, error if the controller is not r
 
 ```ts
 //can be used to get the controller by generic instead of direct import (will allow to prevent cyclic dependencies)
-//should be used only after AppLife.Start(), otherwise errors
+//should be used only after AppLeaf.Start(), otherwise errors
 const someController = Dependency(SomeController);
 ```
 

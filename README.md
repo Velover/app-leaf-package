@@ -1,4 +1,4 @@
-# App Life Package
+# App Leaf Package
 
 A lightweight, decorator-based lifecycle and dependency injection framework for TypeScript applications.
 
@@ -6,10 +6,10 @@ A lightweight, decorator-based lifecycle and dependency injection framework for 
 
 ```bash
 # Using npm
-npm install app-life
+npm install app-leaf
 
 # Using Bun
-bun add app-life
+bun add app-leaf
 ```
 
 ## Important Import Warning
@@ -38,7 +38,7 @@ Type-only imports prevent the controller class from being registered properly in
 ### Basic Example
 
 ```typescript
-import { Controller, OnInit, OnStart, AppLife } from "app-life-package";
+import { Controller, OnInit, OnStart, AppLeaf } from "app-leaf";
 
 @Controller()
 class HelloController {
@@ -68,13 +68,13 @@ class AppController {
 }
 
 // Start the application lifecycle
-AppLife.Start();
+AppLeaf.Start();
 ```
 
 ### Using Modules
 
 ```typescript
-import { Controller, Module, AppLife } from "app-life-package";
+import { Controller, Module, AppLeaf } from "app-leaf";
 
 @Controller()
 class UserController {
@@ -94,8 +94,8 @@ class ProductController {
 class FeatureModule {}
 
 // To ensure all controllers are imported
-AppLife.LoadModules([FeatureModule]);
-AppLife.Start();
+AppLeaf.LoadModules([FeatureModule]);
+AppLeaf.Start();
 ```
 
 ### Controlling Load Order
@@ -111,7 +111,7 @@ class SecondController {}
 ### Using the Dependency Utility
 
 ```typescript
-import { Controller, OnStart, Dependency, AppLife } from "app-life-package";
+import { Controller, OnStart, Dependency, AppLeaf } from "app-leaf";
 
 @Controller()
 class ServiceController {
@@ -130,7 +130,7 @@ class ConsumerController {
   }
 }
 
-AppLife.Start();
+AppLeaf.Start();
 ```
 
 ## API Reference
@@ -161,16 +161,16 @@ Registers a class as a module containing a list of controllers.
 
 Gets an instance of a registered controller after initialization.
 
-- Should primarily be used within `OnStart` methods or after `AppLife.Start()`
+- Should primarily be used within `OnStart` methods or after `AppLeaf.Start()`
 - Throws error if controller is not registered or not loaded yet
 
-### AppLife Namespace
+### AppLeaf Namespace
 
-#### `AppLife.LoadModules(modules: any[])`
+#### `AppLeaf.LoadModules(modules: any[])`
 
 Ensures that all controllers in the provided modules are imported.
 
-#### `AppLife.Start()`
+#### `AppLeaf.Start()`
 
 Starts the application lifecycle:
 

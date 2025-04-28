@@ -1,5 +1,5 @@
 {
-  "name": "app-life",
+  "name": "app-leaf",
   "version": "0.1.0",
   "author": "Catargo",
   "main": "dist/index.js",
@@ -27,10 +27,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Velover/app-life-package.git"
+    "url": "git+https://github.com/Velover/app-leaf-package.git"
   },
   "bugs": {
-    "url": "https://github.com/Velover/app-life-package/issues"
+    "url": "https://github.com/Velover/app-leaf-package/issues"
   },
-  "homepage": "https://github.com/Velover/app-life-package#readme"
+  "homepage": "https://github.com/Velover/app-leaf-package#readme"
 }

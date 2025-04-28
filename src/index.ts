@@ -12,17 +12,17 @@ let started = false;
 const ON_INIT_METADATA_KEY = "onInit";
 const ON_START_METADATA_KEY = "onStart";
 
-function AppLifeError(message: string) {
-  return new Error(`[AppLife]: ${message}`);
+function AppLeafError(message: string) {
+  return new Error(`[AppLeaf]: ${message}`);
 }
 
 function DebugLog(type: "warn" | "log" | "error", ...args: any[]) {
   if (type === "warn") {
-    console.warn("[AppLife]: ", ...args);
+    console.warn("[AppLeaf]: ", ...args);
   } else if (type === "error") {
-    console.error("[AppLife]: ", ...args);
+    console.error("[AppLeaf]: ", ...args);
   } else {
-    console.log("[AppLife]: ", ...args);
+    console.log("[AppLeaf]: ", ...args);
   }
 }
 
@@ -30,7 +30,7 @@ function DebugLog(type: "warn" | "log" | "error", ...args: any[]) {
 export function Controller(options: { loadOrder?: number } = {}) {
   return function (target: any) {
     if (controllerRegistry.has(target)) {
-      throw AppLifeError("Controller already registered");
+      throw AppLeafError("Controller already registered");
     }
     controllerRegistry.set(target, { options, target });
     loadOrderMap.set(target, options.loadOrder ?? 0);
@@ -63,7 +63,7 @@ export function OnStart() {
 export function Module(controllers: any[]) {
   return function (target: any) {
     if (moduleRegistry.has(target)) {
-      throw AppLifeError("Module already registered");
+      throw AppLeafError("Module already registered");
     }
     moduleRegistry.set(target, controllers);
   };
@@ -87,7 +87,7 @@ async function registerController(ControllerClass: any): Promise<any> {
 
   // Detect cyclic dependencies
   if (registeringControllers.has(ControllerClass)) {
-    throw AppLifeError("Cyclic dependency detected");
+    throw AppLeafError("Cyclic dependency detected");
   }
   registeringControllers.add(ControllerClass);
 
@@ -98,7 +98,7 @@ async function registerController(ControllerClass: any): Promise<any> {
 
   for (const dep of paramTypes) {
     if (!controllerRegistry.has(dep)) {
-      throw AppLifeError(
+      throw AppLeafError(
         `Dependency ${dep.name} not registered via @Controller`
       );
     }
@@ -134,27 +134,27 @@ async function registerController(ControllerClass: any): Promise<any> {
 // Utility to get controller instances after startup
 export function Dependency<T>(controllerClass: new (...args: any[]) => T): T {
   if (!started) {
-    throw AppLifeError("Use Dependency after AppLife.Start()");
+    throw AppLeafError("Use Dependency after AppLeaf.Start()");
   }
   if (!controllerInstances.has(controllerClass)) {
-    throw AppLifeError("Controller not registered or not loaded yet");
+    throw AppLeafError("Controller not registered or not loaded yet");
   }
   return controllerInstances.get(controllerClass) as T;
 }
 
-// The AppLife namespace for lifecycle control
-export namespace AppLife {
+// The AppLeaf namespace for lifecycle control
+export namespace AppLeaf {
   // Load modules to ensure all controllers are imported
   export function LoadModules(modules: any[]) {
     for (const module of modules) {
       const controllers = moduleRegistry.get(module);
       if (!controllers) {
-        throw AppLifeError(`Module ${module.name} not registered via @Module`);
+        throw AppLeafError(`Module ${module.name} not registered via @Module`);
       }
       // Verify all controllers are registered
       for (const controller of controllers) {
         if (!controllerRegistry.has(controller)) {
-          throw AppLifeError(
+          throw AppLeafError(
             `Controller ${controller.name} not registered via @Controller`
           );
         }
