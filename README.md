@@ -157,7 +157,7 @@ Registers a class as a module containing a list of controllers.
 
 ### Functions
 
-#### `Dependency<T>(controllerClass: (...args: any) => T): T`
+#### `Dependency<T>(controllerClass: new (...args: any) => T): T`
 
 Gets an instance of a registered controller after initialization.
 
