@@ -6,10 +6,10 @@ A lightweight, decorator-based lifecycle and dependency injection framework for 
 
 ```bash
 # Using npm
-npm install app-life-package
+npm install app-life
 
 # Using Bun
-bun add app-life-package
+bun add app-life
 ```
 
 ## Important Import Warning
