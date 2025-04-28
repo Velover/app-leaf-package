@@ -1,0 +1,29 @@
+{
+  "name": "app-life",
+  "version": "0.1.0",
+  "author": "Catargo",
+  "main": "dist/index.js",
+  "devDependencies": {
+    "@types/reflect-metadata": "^0.1.0",
+    "bun": "^1.2.10",
+    "typescript": "^5.8.3"
+  },
+  "description": "A brief description of my npm package.",
+  "keywords": [],
+  "license": "MIT",
+  "scripts": {
+    "build": "bun build",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "reflect-metadata": "0.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Velover/app-life-package.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Velover/app-life-package/issues"
+  },
+  "homepage": "https://github.com/Velover/app-life-package#readme"
+}
