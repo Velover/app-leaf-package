@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 // Separated constants for the lifecycle core
 const controllerRegistry = new Map<any, { options: any; target: any }>();
 const controllerInstances = new Map<any, any>();
