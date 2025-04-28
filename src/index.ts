@@ -166,7 +166,7 @@ export namespace AppLife {
   export async function Start() {
     started = true;
     if (controllerRegistry.size === 0) {
-      DebugLog("warn", "[AppLife]: No controllers registered");
+      DebugLog("warn", "No controllers registered");
     }
     // Sort controllers by loadOrder
     const sortedControllers = Array.from(controllerRegistry.entries())
