@@ -12,6 +12,18 @@ npm install app-life-package
 bun add app-life-package
 ```
 
+## Important Import Warning
+
+When using controllers, always use regular imports rather than type-only imports:
+
+```typescript
+import type { SomeController } from "./SomeController"; // BAD: Will cause errors during dependency injection
+
+import { SomeController } from "./SomeController"; // GOOD: Ensures proper controller registration
+```
+
+Type-only imports prevent the controller class from being registered properly in the dependency injection system.
+
 ## Features
 
 - Decorator-based controller registration
