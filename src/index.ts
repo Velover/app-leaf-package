@@ -6,16 +6,31 @@ const controllerInstances = new Map<any, any>();
 const loadOrderMap = new Map<any, number>();
 const registeringControllers = new Set<any>();
 const moduleRegistry = new Map<any, any[]>();
+let started = false;
 
 // Metadata keys constants
 const ON_INIT_METADATA_KEY = "onInit";
 const ON_START_METADATA_KEY = "onStart";
 
+function AppLifeError(message: string) {
+  return new Error(`[AppLife]: ${message}`);
+}
+
+function DebugLog(type: "warn" | "log" | "error", ...args: any[]) {
+  if (type === "warn") {
+    console.warn("[AppLife]: ", ...args);
+  } else if (type === "error") {
+    console.error("[AppLife]: ", ...args);
+  } else {
+    console.log("[AppLife]: ", ...args);
+  }
+}
+
 // Controller decorator with optional loadOrder
 export function Controller(options: { loadOrder?: number } = {}) {
   return function (target: any) {
     if (controllerRegistry.has(target)) {
-      throw new Error("Controller already registered");
+      throw AppLifeError("Controller already registered");
     }
     controllerRegistry.set(target, { options, target });
     loadOrderMap.set(target, options.loadOrder ?? 0);
@@ -48,7 +63,7 @@ export function OnStart() {
 export function Module(controllers: any[]) {
   return function (target: any) {
     if (moduleRegistry.has(target)) {
-      throw new Error("Module already registered");
+      throw AppLifeError("Module already registered");
     }
     moduleRegistry.set(target, controllers);
   };
@@ -72,7 +87,7 @@ async function registerController(ControllerClass: any): Promise<any> {
 
   // Detect cyclic dependencies
   if (registeringControllers.has(ControllerClass)) {
-    throw new Error("Cyclic dependency detected");
+    throw AppLifeError("Cyclic dependency detected");
   }
   registeringControllers.add(ControllerClass);
 
@@ -83,7 +98,9 @@ async function registerController(ControllerClass: any): Promise<any> {
 
   for (const dep of paramTypes) {
     if (!controllerRegistry.has(dep)) {
-      throw new Error(`Dependency ${dep.name} not registered via @Controller`);
+      throw AppLifeError(
+        `Dependency ${dep.name} not registered via @Controller`
+      );
     }
     const depInstance = await registerController(dep);
     dependencies.push(depInstance);
@@ -94,7 +111,7 @@ async function registerController(ControllerClass: any): Promise<any> {
   try {
     instance = new ControllerClass(...dependencies);
   } catch (error) {
-    console.error("Error in constructor:", error);
+    DebugLog("error", "Error in constructor:", error);
     throw error; // App stops if constructor fails
   }
 
@@ -104,7 +121,7 @@ async function registerController(ControllerClass: any): Promise<any> {
     try {
       await instance[onInitMethod]();
     } catch (error) {
-      console.error("Error in OnInit:", error);
+      DebugLog("error", "Error in OnInit:", error);
       throw error; // App stops if OnInit fails
     }
   }
@@ -115,11 +132,14 @@ async function registerController(ControllerClass: any): Promise<any> {
 }
 
 // Utility to get controller instances after startup
-export function Dependency(controllerClass: any) {
-  if (!controllerInstances.has(controllerClass)) {
-    throw new Error("Controller not registered or not loaded yet");
+export function Dependency<T>(controllerClass: new (...args: any[]) => T): T {
+  if (!started) {
+    throw AppLifeError("Use Dependency after AppLife.Start()");
   }
-  return controllerInstances.get(controllerClass);
+  if (!controllerInstances.has(controllerClass)) {
+    throw AppLifeError("Controller not registered or not loaded yet");
+  }
+  return controllerInstances.get(controllerClass) as T;
 }
 
 // The AppLife namespace for lifecycle control
@@ -129,12 +149,12 @@ export namespace AppLife {
     for (const module of modules) {
       const controllers = moduleRegistry.get(module);
       if (!controllers) {
-        throw new Error(`Module ${module.name} not registered via @Module`);
+        throw AppLifeError(`Module ${module.name} not registered via @Module`);
       }
       // Verify all controllers are registered
       for (const controller of controllers) {
         if (!controllerRegistry.has(controller)) {
-          throw new Error(
+          throw AppLifeError(
             `Controller ${controller.name} not registered via @Controller`
           );
         }
@@ -144,6 +164,10 @@ export namespace AppLife {
 
   // Start the application lifecycle
   export async function Start() {
+    started = true;
+    if (controllerRegistry.size === 0) {
+      DebugLog("warn", "[AppLife]: No controllers registered");
+    }
     // Sort controllers by loadOrder
     const sortedControllers = Array.from(controllerRegistry.entries())
       .sort(
@@ -165,7 +189,7 @@ export namespace AppLife {
         const promise = new Promise<void>((res) => {
           res(instance[onStartMethod]());
         }).catch((error) => {
-          console.warn("Warning in OnStart:", error, instance);
+          DebugLog("warn", "Error in OnStart:", error, instance);
         });
         startPromises.push(promise);
       }
