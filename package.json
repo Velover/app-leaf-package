@@ -3,6 +3,13 @@
   "version": "0.1.0",
   "author": "Catargo",
   "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "devDependencies": {
     "@types/reflect-metadata": "^0.1.0",
     "bun": "^1.2.10",
@@ -12,7 +19,8 @@
   "keywords": [],
   "license": "MIT",
   "scripts": {
-    "build": "bun build",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
     "test": "bun test"
   },
   "dependencies": {
